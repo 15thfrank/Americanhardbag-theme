@@ -1,0 +1,209 @@
+<script>
+
+
+</script>
+{%- comment -%}<!--
+<style>
+    .sbbbody {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+        background-color: #000;
+    }
+
+    #sbbwrapper {
+        width: 100%;
+        max-width: 964px;
+        position: relative;
+        margin: 0 auto;
+    }
+
+    #sbbcarousel {
+        overflow: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+    }
+
+    #sbbcarousel::-webkit-scrollbar {
+        height: 0;
+    }
+
+    #sbbprev, #sbbnext {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        background: rgba(255, 255, 255, 0.9);;
+        border: none;
+        padding: 8px;
+        border-radius: 0;
+        outline: 0;
+        cursor: pointer;
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        border: 1px solid #bbbbbb;
+    }
+    #sbbprev svg, #sbbnext svg {
+        position: relative;
+        top: 34%;
+    }
+    
+
+    #sbbprev {
+        top: 50%;
+        left: 0;
+        transform: translate(50%, -50%);
+        display: none;
+    }
+
+    #sbbnext {
+        top: 50%;
+        right: 0;
+        transform: translate(-50%, -50%);
+    }
+
+    #sbbcontent {
+        display: grid;
+        grid-gap: 16px;
+        grid-auto-flow: column;
+        margin: auto;
+        box-sizing: border-box;
+    }
+
+    .sbbitemwrapper{
+        width: 150px;
+        margin: 10px 30px;
+    }
+
+    .sbbitem {
+        width: 100%;
+        height: auto;
+    }
+
+</style>
+--> {%- endcomment -%}
+
+<div data-section-type="shopbybrand sbbbody">
+    <div class="spacey-row align-center">
+      <h1>{{ section.settings.title }}</h1>
+    </div>
+
+    <div id="sbbwrapper">
+        <div id="sbbcarousel">
+          <div id="sbbcontent">
+            {% for block in section.blocks %}
+            <div class="sbbitemwrapper">
+                {% assign img = block.settings.brandlogo %}
+                {% if block.settings.brandurl != blank %} <a href="{{block.settings.brandurl}}"> {%endif%} <img src="{{ img | img_url: '150x'}}"  class="sbbitem" />{% if block.settings.brandurl != blank %}</a>{% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button id="sbbprev">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0 0h24v24H0V0z" />
+              <path d="M15.61 7.41L14.2 6l-6 6 6 6 1.41-1.41L11.03 12l4.58-4.59z" />
+            </svg>
+          </button>
+          <button id="sbbnext">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path fill="none" d="M0 0h24v24H0V0z" />
+              <path d="M10.02 6L8.61 7.41 13.19 12l-4.58 4.59L10.02 18l6-6-6-6z" />
+            </svg>
+          </button>
+
+    </div>
+</div>
+
+<script>
+    const gap = 46;
+
+    const carousel = document.getElementById("sbbcarousel"),
+    content = document.getElementById("sbbcontent"),
+    next = document.getElementById("sbbnext"),
+    prev = document.getElementById("sbbprev");
+
+    next.addEventListener("click", e => {
+        carousel.scrollBy(width + gap, 0);
+        if (carousel.scrollWidth !== 0) {
+            prev.style.display = "flex";
+        }
+        if (content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+            next.style.display = "none";
+        }
+    });
+    prev.addEventListener("click", e => {
+        carousel.scrollBy(-(width + gap), 0);
+        if (carousel.scrollLeft - width - gap <= 0) {
+            prev.style.display = "none";
+        }
+        if (!content.scrollWidth - width - gap <= carousel.scrollLeft + width) {
+            next.style.display = "flex";
+        }
+    });
+
+    let width = carousel.offsetWidth;
+    window.addEventListener("resize", e => (width = carousel.offsetWidth));
+
+</script>
+
+{% schema %}
+{
+    "name": "Shop by Brand Slider",
+    "max_blocks": 15,
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Shop by Brand"
+        }
+    ],
+    "blocks": [
+        {
+        "type": "image",
+        "name": "Slide",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "brandlogo",
+                "label": "Brand Logo"
+            },
+            {
+                "type": "url",
+                "id": "brandurl",
+                "label": "Link"
+            }
+            ]
+        
+        }
+    ],
+    "presets": [{
+        "name": "Shop by Brand",
+        "category": "Custom Sections",
+        "settings": {},
+        "blocks": [
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          }
+        ]
+      }]
+}
+{% endschema %}

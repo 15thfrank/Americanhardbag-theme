@@ -1,0 +1,9 @@
+{% comment %} Bold:POv2 {% endcomment %} 
+{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}
+{% comment %}
+  The contents of the product.liquid template can be found in /sections/product-template.liquid
+{% endcomment %}
+
+{% section 'product-template' %}
+
+<script>theme.productData[{{ product.id }}] = {{ product | json }};</script>

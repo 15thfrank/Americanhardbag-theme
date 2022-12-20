@@ -1,0 +1,19 @@
+<div id="customer-accounts" class="reading-container reading-container--form">
+<form accept-charset="UTF-8" action="https://vital-forms-api.c1.humanpresence.app/api/form/vfob/083b2ed7-5d29-4202-a320-8013f2ef4f8f$5ae23275b9533000b71b8047" id="create_customer" method="POST" data-vfib="0">
+  <input name="form_type" type="hidden" value="create_customer">
+  <input name="utf8" type="hidden" value="✓"> {{ form.errors | default_errors }} 
+  <div id="first_name" class="cf inputrow"> <label for="first_name" class="login">{{ 'customer.register.first_name' | t }}</label> 
+  <input type="text" value name="customer[first_name]" id="first_name" class="large" size="30"> 
+  </div> 
+  <div id="last_name" class="cf inputrow"> 
+    <label for="last_name" class="login">{{ 'customer.register.last_name' | t }}</label> 
+    <input type="text" value name="customer[last_name]" id="last_name" class="large" size="30">
+  </div> <div id="email" class="cf inputrow">
+  <label for="email" class="login">{{ 'customer.register.email' | t }}</label>
+  <input type="email" value name="customer[email]" id="email" class="large" size="30"> 
+  </div> 
+  <div id="password" class="cf inputrow">
+    <label for="password" class="login">{{ 'customer.register.password' | t }}</label> 
+    <input type="password" value name="customer[password]" id="password" class="large password" size="30"> </div>
+  <div class="buttonrow"> <input class="btn" type="submit" value="{{ 'customer.register.submit' | t }}"> <span class="note">{{ 'customer.account.or' | t }} <a href="{{ shop.url }}">{{ 'customer.register.cancel' | t }}</a></span> </div> </form>
+</div>

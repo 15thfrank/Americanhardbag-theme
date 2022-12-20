@@ -1,0 +1,116 @@
+{% comment %}
+You may enter a MailChimp form action URL between the single-quotes below
+Help for finding that may be found here: http://cleanthemes.co.uk/pages/get-a-mailchimp-form-action-url
+{% endcomment %}
+
+{% assign form_action = '' %}
+
+<div class="page-footer">
+  {% if section.settings.show_signup %}
+  <div class="signup-form form">
+    <div class="signup-form-container">
+      <h6 class="h2 title">{{ 'layout.signup.title' | t }}</h6>
+      <div class="message">{{ 'layout.signup.message' | t }}</div>
+      {% if form_action == blank %}
+      {% form 'customer' %}
+      {% if form.posted_successfully? %}
+      <p class="msg">{{ 'layout.signup.post_success' | t }}</p>
+      {% else %}
+      {% if form.errors %}
+      {% for field in form.errors %}
+      <p class="msg error">{{ field | capitalize }} - {{ form.errors.messages[field] }}</p>
+      {% endfor %}
+      {% endif %}
+      <div class="inline-input-button-row">
+        <div class="inline-input-button-row__input">
+          <input type="hidden" id="contact_tags" name="contact[tags]" value="prospect,newsletter"/>
+          <input type="email" class="text required" value="" name="contact[email]" placeholder="{{ 'layout.signup.placeholder' | t }}" />
+        </div>
+        <div class="inline-input-button-row__button">
+          <button type="submit">{{ 'layout.signup.submit' | t }}</button>
+        </div>
+      </div>
+      {% endif %}
+      {% endform %}
+
+      {% else %}
+
+      <form action="{{ form_action }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+        <div class="inline-input-button-row">
+          <div class="inline-input-button-row__input">
+            <input type="email" class="required email text" value="" required name="EMAIL" placeholder="{{ 'layout.signup.placeholder' | t }}" />
+          </div>
+          <div class="inline-input-button-row__button">
+            <button type="submit" name="subscribe">{{ 'layout.signup.submit' | t }}</button>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+  
+
+  <div class="page-footer__lower">
+    <div class="page-footer__row">
+      {% if linklists[section.settings.menu_linklist].links.size > 0 %}
+      <ul class="nav">
+        {% for link in linklists[section.settings.menu_linklist].links %}
+        <li>{{ link.title | link_to: link.url }}</li>
+        {% endfor %}
+        
+        {% if shop.customer_accounts_enabled %}
+        <span class="account-links">
+          {% if customer  %}
+          {{ 'layout.customer.account' | t | link_to: '/account' }} / 
+          {{ 'layout.customer.log_out' | t | customer_logout_link }}
+          {% else %}
+          {{ 'layout.customer.log_in' | t | customer_login_link }} /
+          {{ 'layout.customer.register' | t | customer_register_link }}
+          {% endif %}
+        </span>
+        {% endif %}
+
+      </ul>
+      {% endif %}
+      {% include 'social-icons' %}
+    </div>
+    
+
+    <div class="page-footer__row">
+      <div class="copy">
+        &copy; {{ "now" | date: "%Y" }} {{ shop.name | link_to: '/' }}.
+
+        {{ 'layout.footer.theme_by_html' | t }}
+
+        {{ powered_by_link }}
+
+      </div>
+      <span class="payment-methods">
+        {% for type in shop.enabled_payment_types %}
+        <img class="lazyload" data-src="{{ type | payment_type_img_url }}" alt="{{ type | escape }}" />
+        {% endfor %}
+      </span>
+    </div>
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+	  {
+        "type": "checkbox",
+        "id": "show_signup",
+        "label": "Show newsletter signup"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_linklist",
+        "label": "Menu",
+		"default": "footer"
+      }
+	]
+  }
+{% endschema %}

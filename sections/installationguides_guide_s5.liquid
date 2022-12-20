@@ -1,0 +1,86 @@
+<div class="insguide_guides {% if section.settings.displaysection == false %}nodisplay{% endif %}" id="gs5">
+    <div class="guidesectiontitlecontainer">
+      <h1>{{ section.settings.sectiontitle }}</h1>
+    </div>
+    <div class="blocklayout guidescontainer">
+      {% for block in section.blocks %}
+      <div class="singleguide">
+        <a href="{{block.settings.guideurl}}">
+          {% if block.settings.guideimage == blank %}
+          {{ 'image' | placeholder_svg_tag: "guideimg" }}
+          {% else %}
+          {% assign img = block.settings.guideimage %}
+          <img src="{{ img | img_url: '195x'}}" class="guideimg" />
+          {% endif %}
+          <h4> {{block.settings.guidetitle}} </h4>
+          <p>{{block.settings.description}}</p>
+        </a>
+      </div>
+  
+      {% endfor %}
+    </div>
+  </div>
+  
+  {% schema %}
+    {
+      "name": "Guide Section 5",
+      "max_blocks": 15,
+      "settings": [
+        {
+          "type": "text",
+          "id": "sectiontitle",
+          "label": "Section Title",
+          "default": "Guide Section Five"
+        },
+        {
+          "type": "checkbox",
+          "id": "displaysection",
+          "label": "Would you like to display this section?",
+          "default": true,
+          "info": "Check the box if you want to display this section"
+        }
+      ],
+      "blocks": [
+        {
+        "type": "select",
+        "name": "Guide",
+        "settings": [
+            {
+              "type": "header",
+              "content": "Guide Info:"
+            },
+            {
+              "type": "image_picker",
+              "id": "guideimage",
+              "label": "Select guide image"
+            },
+            {
+              "type": "text",
+              "id": "guidetitle",
+              "label": "Guide Title",
+              "default": "Guide Title"
+            },
+            {
+              "type": "textarea",
+              "id": "description",
+              "label": "Guide Description",
+              "default": "Guide description"
+            },
+            {
+              "type": "url",
+              "id": "guideurl",
+              "label": "Link"
+            }
+            
+            ]
+        }
+      ]
+    }
+  {% endschema %}
+  
+  {% stylesheet %}
+  {% endstylesheet %}
+  
+  {% javascript %}
+  {% endjavascript %}
+  

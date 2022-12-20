@@ -1,0 +1,60 @@
+<div class="insguide_icons">
+  <div class="blocklayout breadcrumbcontainer">
+    {% include 'breadcrumbs' %}
+  </div>
+  
+  <div class="blocklayout iconscontainer">
+    {% assign iconurl = 'gs' %}
+    {% assign blklen = 1 %}
+    {% for block in section.blocks %}
+    <div class="singleicon">
+      <a href="#{{-iconurl-}}{{-blklen}}">
+        {% if block.settings.icon == blank %}
+        {{ 'image' | placeholder_svg_tag: "ins_icon" }}
+        {% else %}
+        {% assign img = block.settings.icon %}
+        <img src="{{ img | img_url: '120x'}}" class="ins_icon" />
+        {% endif %}
+        <p> {{block.settings.icontitle}} </p>
+      </a>
+      {% assign blklen = blklen | plus: 1 %}
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+
+
+{% schema %}
+{
+    "name": "Icons",
+    "max_blocks": 5,
+    "settings": [],
+    "blocks": [
+        {
+        "type": "image",
+        "name": "Icon",
+        "settings": [
+            {
+              "type": "text",
+              "id": "icontitle",
+              "label": "Icon Title",
+              "default": "Header Title"
+            },
+            {
+                "type": "image_picker",
+                "id": "icon",
+                "label": "Select icon image"
+            }
+          ]
+        }
+    ]
+}
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

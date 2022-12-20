@@ -1,0 +1,11 @@
+<div class="content-header align-centre">
+  <h1 class="page-title">{{ 'collections.collection_list.title' | t }}</h1>
+</div>
+
+<div class="blocklayout">
+  {% for collection in collections %}
+  {% unless collection.handle == 'all' or collection.handle contains 'frontpage' %}
+  {% include 'collection-block' %}
+  {% endunless %}
+  {% endfor %}
+</div>

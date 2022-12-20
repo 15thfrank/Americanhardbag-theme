@@ -1,0 +1,96 @@
+{%- comment -%}{% assign bgimg = block.settings.bimage | img_url: '250x' %}{%- endcomment -%}
+
+<style>
+  .recitem {
+    background-color: #f8f8f8;
+    /*background-image: url("{{bgimg}}") ;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;*/
+    height: 250px;
+    width:250px !important;
+    text-align:center;
+    vertical-align: middle;
+    margin: 10px;
+    display: inline-block;
+    position: relative;
+  }
+</style>
+
+<div class="insguide_rec">
+  <div class="recsectitle">
+    <h1>{{ section.settings.sectiontitle }}</h1>
+  </div>
+  {% for block in section.blocks %}
+  <a href=" {{block.settings.url}} ">
+    <div class="recitem">
+      <div class="reccontent">
+        <p> {{block.settings.title}} </p><br>
+        <p> {{block.settings.subtitle}} </p>
+        <p> {{block.settings.extrainfo}} </p>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+  
+</div>
+
+
+{% schema %}
+  {
+    "name": "Recommended section",
+    "max_blocks": 3,
+    "settings": [
+      {
+        "type": "text",
+        "id": "sectiontitle",
+        "label": "Section title",
+        "default": "NOT FINDING WHAT YOU'RE LOOKING FOR?"
+      }
+    
+    ],
+    "blocks": [
+      {
+       "name": "Select",
+       "type": "select",
+       "settings": [
+         /*{
+           "type": "image_picker",
+           "id": "bimage",
+           "label": "Image"
+         },*/
+         {
+           "type": "text",
+           "id": "title",
+           "label": "Title",
+           "default": "Title"
+         },
+         {
+           "type": "text",
+           "id": "subtitle",
+           "label": "Subtitle",
+           "default": "Subtitle"
+         },
+         {
+           "type": "text",
+           "id": "extrainfo",
+           "label": "Extra info",
+           "default": "Additional Information"
+         },
+         {
+           "type": "url",
+           "id": "url",
+           "label": "Link"
+         }
+       ] 
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

@@ -1,0 +1,7 @@
+{% comment %} Bold:POv2 {% endcomment %}
+{%- include 'bold-product' with product, hide_action: 'break', output: 'none' -%}
+{% layout false %}
+
+{% section 'product-template' %}
+
+<script>theme.productData[{{ product.id }}] = {{ product | json }};</script>

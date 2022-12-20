@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta name="p:domain_verify" content="81c76670598949a28b59da29250ddbe1"/>
+    <meta name="p:domain_verify" content="e6c0dd4fdbf34b0596338155992d4e23"/>
+    <meta name="google-site-verification" content="q97cSyQymHGiw7sSAVozKoS4FxN_1WlvD2ChDksrICY" />
+    <meta name="p:domain_verify" content="e6c0dd4fdbf34b0596338155992d4e23"/>
+    <!-- Masonry v3.0.4 -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="{{ settings.logo_bg_col }}">
+
+    {% if settings.favicon != blank and settings.favicon contains '.png' %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: 'master' }}" type="image/png" />
+    {% elsif settings.favicon != blank and settings.favicon contains '.ico' %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: 'master' }}" type="image/x-icon" />
+    {% endif %}
+
+    {% include 'SEOManager' %}
+    <link rel="canonical" href="{{ canonical_url }}" />
+
+    {% include 'opengraph' %}
+
+    {% include 'google-fonts-import' %}
+
+    {{ content_for_header }}
+   
+    {% comment %} Bold:POv2 - Relocated/Updated jQuery. {% endcomment %}
+    {{ '//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js' | script_tag }}
+    {{ '//code.jquery.com/jquery-migrate-1.4.1.js' | script_tag }}    
+    {%- include 'bold-product' with product, hide_action: 'header' -%}
+    {% include 'bold-common' %}
+
+    {{ 'styles.scss.css' | asset_url | stylesheet_tag }}
+
+    {% if template contains 'customers' %}
+    {{ "shopify_common.js" | shopify_asset_url | script_tag }}
+    {{ "customer_area.js"  | shopify_asset_url | script_tag }}
+    {% endif %}
+
+    {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+
+    <script>
+      document.documentElement.className = ''; //Remove no-js class
+      window.theme = window.theme || {};
+      theme.money_format = {{ shop.money_format | json }};
+      theme.money_container = 'span.theme-money';
+      theme.productData = {};
+    </script>
+
+ 
+{% comment %}
+<!--rh_code_block_v_3_start_init_pixel-->
+
+Everything inside this block is generated and may be automaticaly deleted.
+
+This piece of Liquid template code is injected to the layout/theme.liquid by ROI Hunter Easy application
+and it contains code that is necessary for correct functioning of Facebook pixel and conversion tracking
+It is strongly recommended not to change the code
+{% endcomment %}
+
+{% comment %}
+(This comment is used to identify ROI Hunter Easy application script. Please don't change this comment)
+Begin of ROI Hunter Easy code
+{% endcomment %}
+<script type="text/javascript">
+
+(function(window, document) {
+    if (window.rheasy_fbq) return;
+    window.rheasy_fbq = (function() {
+        if (arguments.length === 0) {
+            return;
+        }
+
+        var pixelId, trackType, contentObj;     //get parameters:
+
+        if (typeof arguments[0] === 'string') pixelId = arguments[0];       //param string PIXEL ID
+        if (typeof arguments[1] === 'string') trackType = arguments[1];     //param string TRACK TYPE (PageView, Purchase)
+        if (typeof arguments[2] === 'object') contentObj = arguments[2];    //param object (may be null):
+                                                                            //    {value : subtotal_price,
+                                                                            //     content_type : some_string,
+                                                                            //     currency : shop_curency,
+                                                                            //     contents : [{id, quantity, item_price}, ...] instance of array
+                                                                            //    }
+
+        var argumentsAreValid = typeof pixelId === 'string' && pixelId.replace(/\s+/gi, '') !== '' &&
+            typeof trackType === 'string' && trackType.replace(/\s+/gi, '') !== '';
+
+        if (!argumentsAreValid) {
+            console.error('RH PIXEL - INVALID ARGUMENTS');
+            return;
+        }
+
+        var params = [];
+        params.push('id=' + encodeURIComponent(pixelId));
+        switch (trackType) {
+            case 'PageView':
+            case 'ViewContent':
+            case 'Search':
+            case 'AddToCart':
+            case 'InitiateCheckout':
+            case 'AddPaymentInfo':
+            case 'Lead':
+            case 'CompleteRegistration':
+            case 'Purchase':
+            case 'AddToWishlist':
+                params.push('ev=' + encodeURIComponent(trackType));
+                break;
+            default:
+                console.error('RH PIXEL - BAD TRACKTYPE');
+                return;
+        }
+
+        params.push('dl=' + encodeURIComponent(document.location.href));
+        if (document.referrer) params.push('rl=' + encodeURIComponent(document.referrer));
+        params.push('if=false');
+        params.push('ts=' + new Date().getTime());
+
+        /* Custom parameters to string */
+        if (typeof contentObj === 'object') {                                               //`contents : [{id, quantity, item_price}, ...]` to string
+            for (var u in contentObj) {
+                if (typeof contentObj[u] === 'object' && contentObj[u] instanceof Array) {  // `[{id, quantity, item_price}, ...]` to string
+                    if (contentObj[u].length > 0) {
+                        for (var y = 0; y < contentObj[u].length; y++) {
+                            if (typeof contentObj[u][y] === 'object') {                     // `{id, quantity, item_price}` to string
+                                contentObj[u][y] = JSON.stringify(contentObj[u][y]);
+                            }
+                            contentObj[u][y] = (contentObj[u][y] + '')  //JSON to string
+                                .replace(/^\s+|\s+$/gi, '')             //delete white characterts from begin on end of the string
+                                .replace(/\s+/gi, ' ')                  //replace white characters inside string to ' '
+                        }
+                        params.push('cd[' + u + ']=' + encodeURIComponent(contentObj[u].join(',')   //create JSON array - [param1,param2,param3]
+                            .replace(/^/gi, '[')
+                            .replace(/$/gi, ']')))
+                    }
+                } else if (typeof contentObj[u] === 'string') {
+                    params.push('cd[' + u + ']=' + encodeURIComponent(contentObj[u]));
+                }
+            }
+        }
+
+        var imgId = new Date().getTime();
+        var img = document.createElement('img');
+        img.id = 'fb_' + imgId, img.src = 'https://www.facebook.com/tr/?' + params.join('&'), img.width = 1, img.height = 1, img.style = 'display:none;';
+        document.head.appendChild(img);
+        window.setTimeout(function() { var t = document.getElementById('fb_' + imgId);
+            t.parentElement.removeChild(t); }, 1000);
+
+    });
+})(window, document);
+
+    rheasy_fbq('228159771091334', 'PageView');
+</script>
+{% comment %}
+(This comment is used to identify ROI Hunter Easy application script. Please don't change this comment)
+End of ROI Hunter Easy code
+
+<!--rh_code_block_v_3_end_init_pixel-->
+{% endcomment %}</head>
+
+  <body class="{% if customer %}customer-logged-in {% endif %}template-{{ template | split: '.' | first }}">
+
+    {% if settings.bg_image != blank and settings.bg_method contains 'full' %}<div id="ios_scroll"></div>{% endif %}
+
+    <div class="bodywrap cf">
+
+      {% section 'header' %}
+
+      <div id="content">
+        {{ content_for_layout }}
+      </div>
+
+      {% section 'footer' %}
+
+    </div>
+
+    {{ 'vendor.js' | asset_url | script_tag }}
+    {{ 'theme.js' | asset_url | script_tag }}
+
+    {% include 'currencies' %}
+    <!-- BEEKETINGSCRIPT CODE START -->{% include 'bk-tracking' %}<!-- BEEKETINGSCRIPT CODE END -->
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+This piece of Liquid template code is injected to the layout/theme.liquid.
+This code is rendered directly within every page.
+{% endcomment %}
+
+<script type="text/javascript" id="roihuntereasy">
+/* <![CDATA[ */
+  // original ecomm_prodid = 'shopify_{{ shopify_store_country  }}_{{ item.product.id }}_{{ item.variant.id }}'
+  {% if template contains 'cart' %}
+  var roihuntereasy_google_tag_params = {
+      ecomm_prodid: [{% for item in cart.items %}'shopify_{{ item.product.id }}_{{ item.variant.id }}'{% unless forloop.last %}, {% endunless %}{% endfor %}],
+      ecomm_pagetype: 'cart',
+      ecomm_totalvalue: {{ cart.total_price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}
+  };
+
+  {% elsif template contains 'collection' %}
+  var roihuntereasy_google_tag_params = {
+      ecomm_prodid: [{% for item in collection.products limit:5 %}'shopify_{{ item.id }}_{{ item.variants.first.id }}'{% unless forloop.last %}, {% endunless %}{% endfor %}],
+      ecomm_pagetype: 'category',
+      ecomm_category: '{{ collection.handle }}'
+  };
+
+  {% elsif template contains 'product' %}
+  var roihuntereasy_google_tag_params = {
+      ecomm_prodid: 'shopify_{{ product.id }}_{{ product.selected_or_first_available_variant.id }}',
+      ecomm_pagetype: 'product',
+      ecomm_totalvalue: {{ product.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}
+  };
+  {% endif %}
+
+  /* Load Script function we may need to load jQuery from the Google's CDN */
+  /* That code is world-reknown. */
+  /* One source: http://snipplr.com/view/18756/loadscript/ */
+  var loadScript = function(url, callback){
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+
+    // If the browser is Internet Explorer.
+    if (script.readyState){
+      script.onreadystatechange = function(){
+        if (script.readyState == "loaded" || script.readyState == "complete"){
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    // For any other browser.
+    } else {
+      script.onload = function(){
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  };
+
+  if (typeof Shopify.checkout === 'undefined')    { 
+  loadScript('https://www.googleadservices.com/pagead/conversion_async.js', function(){
+    console.log("Firing remarketing tracking!")
+    window.google_trackConversion({
+      google_conversion_id: 849050929,
+      google_custom_params: window.roihuntereasy_google_tag_params,
+      google_remarketing_only: true
+    })
+  });
+}
+
+
+/* ]]> */
+</script>
+{% comment %}
+This piece of Liquid template code is injected to the layout/theme.liquid by ROI Hunter Easy application
+and it contains code that is necessary for correct functioning of Facebook pixel and conversion tracking
+It is strongly recommended not to change the code
+{% endcomment %}
+
+{% comment %}
+(This comment is used to identify ROI Hunter Easy application script. Please don't change this comment)
+Begin of ROI Hunter Easy code
+{% endcomment %}
+<script type="text/javascript" id="fb_roihuntereasy">
+/* <![CDATA[ */
+{% if template contains 'cart' %}
+    var cart_items = [
+        {% for item in cart.items %}
+            {
+                id: 'shopify_{{ item.product.id }}_{{ item.variant.id }}',
+                quantity: '{{ item.quantity }}',
+                item_price: '{{ item.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}'
+            }
+            {% unless forloop.last %}
+            ,
+            {% endunless %}
+        {% endfor %}
+    ];
+
+    var params = {
+        value: '{{ cart.total_price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}',
+        content_type: 'product',
+        currency: '{{ shop.currency }}',
+        contents: cart_items
+    };
+
+    {% if cart.item_count != 0 %}
+
+        rheasy_fbq('228159771091334', 'AddToCart', params);
+
+    {% endif %}
+
+{% elsif template contains 'product' %}
+    var params = {
+        value: '{{ product.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}',
+        content_name: '{{ product.title  | replace: "'", "\\'"}}',
+        content_type: 'product',
+        currency: '{{ shop.currency }}',
+        content_ids: [ 'shopify_{{ product.id }}_{{ product.selected_or_first_available_variant.id }}' ]
+    };
+
+    rheasy_fbq('228159771091334', 'ViewContent', params);
+
+{% endif %}
+/* ]]> */
+</script>
+{% comment %}
+(This comment is used to identify ROI Hunter Easy application script. Please don't change this comment)
+End of ROI Hunter Easy code
+{% endcomment %}</body>
+</html>

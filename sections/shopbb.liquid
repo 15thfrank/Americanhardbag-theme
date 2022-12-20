@@ -1,0 +1,119 @@
+
+<div data-section-type="shopbybrand sbbbody">
+    <div class="spacey-row align-center">
+        <h1>{{ section.settings.title }}</h1>
+    </div>
+
+    <div class="carousel sbbcarousel">
+        {% for block in section.blocks %}
+            <div class="sbitemwrapper">
+                {% assign img = block.settings.brandlogo %}
+                {% if block.settings.brandurl != blank %} <a href="{{block.settings.brandurl}}"> {%endif%} <img src="{{ img | img_url: '150x'}}"  class="sbbitem" />{% if block.settings.brandurl != blank %}</a>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script>
+jQuery(document).ready(function ($) {
+  
+  var gadgetCarousel = $(".carousel");
+  
+  gadgetCarousel.each(function() {
+    if ($(this).is(".sbbcarousel")) {
+		$(this).slick({
+        dots: false,
+        arrows: true,
+        infinite: true,
+        slidesToShow: 6,
+        responsive: [
+            {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 5,
+                slidesToScroll: 1,
+                infinite: true,
+                dots: true
+            }
+            },
+            {
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 3,
+                slidesToScroll: 1
+            }
+            },
+            {
+            breakpoint: 480,
+            settings: {
+                slidesToShow: 2,
+                slidesToScroll: 1
+            }
+            }
+            // You can unslick at a given breakpoint now by adding:
+            // settings: "unslick"
+            // instead of a settings object
+        ]
+      });
+    } 
+  })
+  
+  
+    $(document).ready(function() {
+        const elements = document.querySelectorAll('.slick-arrow');
+        elements[0].innerHTML = '<span class="entypo-left-open-big"></span>'
+        elements[1].innerHTML = '<span class="entypo-right-open-big"></span>'
+    });
+  
+});
+
+
+</script>
+
+{% schema %}
+{
+    "name": "Shop by Brand",
+    "max_blocks": 15,
+    "settings": [
+        {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Shop by Brand"
+        }
+    ],
+    "blocks": [
+        {
+        "type": "image",
+        "name": "Slide",
+        "settings": [
+            {
+                "type": "image_picker",
+                "id": "brandlogo",
+                "label": "Brand Logo"
+            },
+            {
+                "type": "url",
+                "id": "brandurl",
+                "label": "Link"
+            }
+            ]
+        
+        }
+    ],
+    "presets": [{
+        "name": "Shop by Brand -Z",
+        "category": "Custom Sections",
+        "settings": {},
+        "blocks": [
+          {
+            "type": "image"
+          },
+          {
+            "type": "image"
+          }
+        ]
+      }]
+}
+{% endschema %}

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    <meta name="msvalidate.01" content="96D856B0A66230CC6C33FB1B470DDC8E" />
+    <meta name="p:domain_verify" content="81c76670598949a28b59da29250ddbe1"/>
+    <meta name="p:domain_verify" content="e6c0dd4fdbf34b0596338155992d4e23"/>
+    <meta name="google-site-verification" content="q97cSyQymHGiw7sSAVozKoS4FxN_1WlvD2ChDksrICY" />
+    <meta name="p:domain_verify" content="e6c0dd4fdbf34b0596338155992d4e23"/>
+    <!-- Masonry v3.0.4 -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="{{ settings.logo_bg_col }}">
+    {% if settings.favicon != blank and settings.favicon contains '.png' %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: 'master' }}" type="image/png" />
+    {% elsif settings.favicon != blank and settings.favicon contains '.ico' %}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: 'master' }}" type="image/x-icon" />
+    {% endif %}
+    {% include 'SEOManager' %}
+    <link rel="canonical" href="{{ canonical_url }}" />
+    {% include 'opengraph' %}
+    {% include 'google-fonts-import' %}
+    {{ content_for_header }}
+{%- include 'bold-options-hybrid' -%}
+   
+    {% comment %} Bold:POv2 - Relocated/Updated jQuery. {% endcomment %}
+    {{ '//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js' | script_tag }}
+    {{ '//code.jquery.com/jquery-migrate-1.4.1.js' | script_tag }}    
+    {%- include 'bold-product' with product, hide_action: 'header' -%}
+    {% include 'bold-common' %}
+    {{ 'styles.scss.css' | asset_url | stylesheet_tag }}
+    {% if template contains 'customers' %}
+    {{ "shopify_common.js" | shopify_asset_url | script_tag }}
+    {{ "customer_area.js"  | shopify_asset_url | script_tag }}
+    {% endif %}
+    {{ 'option_selection.js' | shopify_asset_url | script_tag }}
+    <script>
+      document.documentElement.className = ''; //Remove no-js class
+      window.theme = window.theme || {};
+      theme.money_format = {{ shop.money_format | json }};
+      theme.money_container = 'span.theme-money';
+      theme.productData = {};
+    </script>
+ 
+
+<!-- ROIHunterEasy HeadSnippet start -->{% include 'roi_hunter_easy_head_snippet' %}<!-- ROIHunterEasy HeadSnippet end -->
+</head>
+  <body class="{% if customer %}customer-logged-in {% endif %}template-{{ template | split: '.' | first }}">
+<!-- ROIHunterEasy BodySection start -->{{ 'roi_hunter_easy_body_section.js' | asset_url | script_tag }}<!-- ROIHunterEasy BodySection end -->
+    {% if settings.bg_image != blank and settings.bg_method contains 'full' %}<div id="ios_scroll"></div>{% endif %}
+    <div class="bodywrap cf">
+      {% section 'header' %}
+      <div id="content">
+        {{ content_for_layout }}
+      </div>
+      {% section 'footer' %}
+    </div>
+{{ '5bb117e831640.concat.min.js' | asset_url | script_tag }}
+{% comment concat %} {{ 'vendor.js' | asset_url | script_tag }} {% endcomment %}
+{% comment concat %} {{ 'theme.js' | asset_url | script_tag }}
+
+  <script src="//cdn.codeblackbelt.com/js/modules/frequently-bought-together/main.min.js?shop=myshopreview.myshopify.com"></script> {% endcomment %}
+    {% include 'currencies' %}
+    <!-- BEEKETINGSCRIPT CODE START -->{% include 'bk-tracking' %}<!-- BEEKETINGSCRIPT CODE END -->
+  </body>
+</html>
+{{ 'custom.scss.css' | asset_url | stylesheet_tag }}

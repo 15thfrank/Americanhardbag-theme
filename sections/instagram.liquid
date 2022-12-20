@@ -1,0 +1,61 @@
+<div class="spacey-row" data-section-type="instagram">
+  
+  {% if section.settings.title != blank %}
+  <h1 class="hometitle h4-style align-center">
+    <a target="_blank" href="https://www.instagram.com/{{ section.settings.account | remove: '@' }}">
+      {{ section.settings.title }}
+    </a>
+  </h1>
+  {% endif %}
+
+  {% unless section.settings.access_token == blank %}
+  
+  <div class="willstagram" data-user_id="self" data-count="25" data-access_token="{{ section.settings.access_token }}"></div>
+  
+  {% else %}
+  
+  <div class="willstagram willstagram-placeholder">
+    <ul class="items">
+      {% for i in (1..12) %}<li class="item">
+          <div class="placeholder-image">{{ 'image' | placeholder_svg_tag }}</div>
+        </li>{% endfor %}
+    </ul>
+  </div>
+  
+  {% endunless %}
+  
+</div>
+
+
+{% schema %}
+  {
+    "name": "Instagram feed",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+		"default": "Instagram feed"
+      },
+	  {
+        "type": "text",
+        "id": "account",
+        "label": "Account name"
+      },
+      {
+        "type": "text",
+        "id": "access_token",
+        "label": "Access token",
+        "info": "Required - [get your access token](http:\/\/cleanthemes.co.uk\/pages\/instagram-integration)"
+      }
+	],
+	"presets": [
+	  {
+		"name": "Instagram feed",
+        "category": "Social media",
+        "settings": {
+        }
+	  }
+	]
+  }
+{% endschema %}

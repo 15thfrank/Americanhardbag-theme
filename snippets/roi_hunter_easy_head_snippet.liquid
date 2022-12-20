@@ -1,0 +1,260 @@
+{% if template == "index" %}
+
+    {% endif %}
+
+    <!-- RHEasy Global Site Tag (gtag.js) - Google AdWords: 849050929 --><script async src="https://www.googletagmanager.com/gtag/js?id=AW-849050929"></script><script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-849050929');
+</script>
+
+    <script type="text/javascript">
+        (function() {
+
+            var remarketingType = 'OTHER';
+
+            {% if template contains 'cart' %} // if current page is cart page
+            var cartPageActive = true; // set cart page flag
+
+            // itemsCart array contains objects containing info necessary for our remarketing scripts
+            // actually we use this array only for facebook scripts
+            var itemsCart = [
+            {% for item in cart.items %} // iterate over all products in cart
+            {
+                // product id
+                id: 'shopify_{{ item.product.id }}_{{ item.variant.id }}',
+                    quantity: '{{ item.quantity }}',
+                // product price.. here u can see some filters usage because we want to unify prices format
+                // for more info about shopify liquid filters see https://help.shopify.com/themes/liquid/filters
+                item_price: '{{ item.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}'
+            }
+            {% unless forloop.last %}
+        , // at the last iteration we won't add comma.. see js syntax for array initializing
+            {% endunless %}
+            {% endfor %}
+        ];
+
+            // object contains total info that we insert directly to the our facebook conversion scripts as argument
+            var facebookEventParams = {
+                // total cost of cart items
+                value: '{{ cart.total_price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}',
+                content_type: 'product',
+                currency: '{{ shop.currency }}',
+                contents: itemsCart
+            };
+
+            var prodIds = [{% for item in cart.items %}'shopify_{{ item.product.id }}_{{ item.variant.id }}'{% unless forloop.last %}, {% endunless %}{% endfor %}];
+            var cartTotalValue = {{ cart.total_price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }};
+
+            // same as facebookEventParams but for google
+            if (remarketingType == 'OTHER') {
+                var googleTagParams = {
+                    dynx_itemid: prodIds,
+                    dynx_pagetype: 'conversionintent',
+                    dynx_totalvalue: cartTotalValue
+                };
+            } else {
+                var googleTagParams = { // same iteration logic as in itemsCart but for google we need product ids only
+                    ecomm_prodid: prodIds,
+                    ecomm_pagetype: 'cart',
+                    ecomm_totalvalue: cartTotalValue
+                };
+            }
+            {% else %} // if current page is NOT cart page
+            var cartPageActive = false; // unset cart page flag
+            {% endif %}
+
+            {% if template contains 'product' %} // if current page is product page
+            var productPageActive = true; // set product page flag
+
+            // purpose of this object is already described above
+            var facebookEventParams = {
+                value: '{{ product.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }}',
+                content_name: '{{ product.title  | replace: "'", "\\'"}}',
+                content_type: 'product',
+                currency: '{{ shop.currency }}',
+                content_ids: [ 'shopify_{{ product.id }}_{{ product.selected_or_first_available_variant.id }}' ]
+        };
+
+            var prodId = 'shopify_{{ product.id }}_{{ product.selected_or_first_available_variant.id }}';
+            var prodTotalValue = {{ product.price | money_without_currency | remove: '.' | remove: ','  | divided_by: 100.0 }};
+            // same as facebookEventParams but for google
+            if (remarketingType == 'OTHER') {
+                var googleTagParams = {
+                    dynx_itemid: prodId,
+                    dynx_pagetype: 'offerdetail',
+                    dynx_totalvalue: prodTotalValue
+                };
+            } else {
+                var googleTagParams = { // same iteration logic as in itemsCart but for google we need product ids only
+                    ecomm_prodid: prodId,
+                    ecomm_pagetype: 'product',
+                    ecomm_totalvalue: prodTotalValue
+                };
+            }
+
+            {% else %} // if current page is NOT product page
+            var productPageActive = false; // unset product page flag
+            {% endif %}
+
+            {% if template contains 'collection' %}
+            var collectionPageActive = true;
+
+            var prodIds = [{% for item in collection.products %}
+{%- include 'bold-product' with item, hide_action: 'skip', output: 'none' -%}
+                           'shopify_{{ item.id }}_{{ item.variants.first.id }}'{% unless forloop.last %}, {% endunless %}{% endfor %}];
+            if (remarketingType == 'OTHER') {
+                var googleTagParams = {
+                    dynx_itemid: prodIds,
+                    dynx_pagetype: 'searchresults'
+                };
+            } else {
+                var googleTagParams = {
+                    ecomm_prodid: prodIds,
+                    ecomm_pagetype: 'category'
+                };
+            }
+            {% else %}
+            var collectionPageActive = false;
+            {% endif %}
+
+            {% if template == "index" %}
+            var mainPageActive = true;
+
+            if (remarketingType == 'OTHER') {
+                var googleTagParams = {
+                    dynx_pagetype: 'home'
+                };
+            } else {
+                var googleTagParams = {
+                    ecomm_pagetype: 'home'
+                };
+            }
+            {% else %}
+            var mainPageActive = false;
+            {% endif %}
+
+            var cartPage = {
+                active: cartPageActive, // flag true/false
+                // if facebookEventParams is undefined set facebookEventParams = null
+                facebookEventParams: typeof facebookEventParams !== 'undefined' ? facebookEventParams : null,
+                googleTagParams: typeof googleTagParams !== 'undefined' ? googleTagParams : null
+            };
+
+            var productPage = {
+                active: productPageActive, // flag true/false
+                facebookEventParams: typeof facebookEventParams !== 'undefined' ? facebookEventParams : null,
+                googleTagParams: typeof googleTagParams !== 'undefined' ? googleTagParams : null
+            };
+
+            var collectionPage = {
+                active: collectionPageActive, // flag true/false
+                facebookEventParams: null,
+                googleTagParams: typeof googleTagParams !== 'undefined' ? googleTagParams : null
+            };
+
+            var mainPage = {
+                active: mainPageActive,
+                facebookEventParams: null,
+                googleTagParams: typeof googleTagParams !== 'undefined' ? googleTagParams : null
+            };
+
+            // here we initialize our global object which contains all necessary information for
+            // our all scripts which fired some google or facebook analytic events etc.
+            // we should use some unique name to identify this object to avoid names conflict
+            // relative to other global objects
+            var hash = 'ROIHunterEasy_5a83c915b9f3150f071dd42973557062ac2f30b295a5b6393544410da07ecb27';
+            window[hash] = {
+                cartPage: cartPage,
+                productPage: productPage,
+                collectionPage: collectionPage,
+                mainPage: mainPage,
+                remarketingType: remarketingType
+            };
+
+            // begin: initialize our rheasy_fbq object for facebook tracking
+            window[hash].rheasy_fbq = function() {
+                if (arguments.length === 0) {
+                    return;
+                }
+
+                var pixelId, trackType, contentObj;     //get parameters:
+
+                if (typeof arguments[0] === 'string') pixelId = arguments[0];       //param string PIXEL ID
+                if (typeof arguments[1] === 'string') trackType = arguments[1];     //param string TRACK TYPE (PageView, Purchase)
+                if (typeof arguments[2] === 'object') contentObj = arguments[2];    //param object (may be null):
+                                                                                    //    {value : subtotal_price,
+                                                                                    //     content_type : some_string,
+                                                                                    //     currency : shop_curency,
+                                                                                    //     contents : [{id, quantity, item_price}, ...] instance of array
+                                                                                    //    }
+
+                var argumentsAreValid = typeof pixelId === 'string' && pixelId.replace(/\s+/gi, '') !== '' &&
+                    typeof trackType === 'string' && trackType.replace(/\s+/gi, '') !== '';
+
+                if (!argumentsAreValid) {
+                    console.error('RH PIXEL - INVALID ARGUMENTS');
+                    return;
+                }
+
+                var params = [];
+                params.push('id=' + encodeURIComponent(pixelId));
+                switch (trackType) {
+                    case 'PageView':
+                    case 'ViewContent':
+                    case 'Search':
+                    case 'AddToCart':
+                    case 'InitiateCheckout':
+                    case 'AddPaymentInfo':
+                    case 'Lead':
+                    case 'CompleteRegistration':
+                    case 'Purchase':
+                    case 'AddToWishlist':
+                        params.push('ev=' + encodeURIComponent(trackType));
+                        break;
+                    default:
+                        console.error('RH PIXEL - BAD TRACKTYPE');
+                        return;
+                }
+
+                params.push('dl=' + encodeURIComponent(document.location.href));
+                if (document.referrer) params.push('rl=' + encodeURIComponent(document.referrer));
+                params.push('if=false');
+                params.push('ts=' + new Date().getTime());
+
+                /* Custom parameters to string */
+                if (typeof contentObj === 'object') {                                               //`contents : [{id, quantity, item_price}, ...]` to string
+                    for (var u in contentObj) {
+                        if (typeof contentObj[u] === 'object' && contentObj[u] instanceof Array) {  // `[{id, quantity, item_price}, ...]` to string
+                            if (contentObj[u].length > 0) {
+                                for (var y = 0; y < contentObj[u].length; y++) {
+                                    if (typeof contentObj[u][y] === 'object') {                     // `{id, quantity, item_price}` to string
+                                        contentObj[u][y] = JSON.stringify(contentObj[u][y]);
+                                    }
+                                    contentObj[u][y] = (contentObj[u][y] + '')  //JSON to string
+                                        .replace(/^\s+|\s+$/gi, '')             //delete white characterts from begin on end of the string
+                                        .replace(/\s+/gi, ' ')                  //replace white characters inside string to ' '
+                                }
+                                params.push('cd[' + u + ']=' + encodeURIComponent(contentObj[u].join(',')   //create JSON array - [param1,param2,param3]
+                                    .replace(/^/gi, '[')
+                                    .replace(/$/gi, ']')))
+                            }
+                        } else if (typeof contentObj[u] === 'string') {
+                            params.push('cd[' + u + ']=' + encodeURIComponent(contentObj[u]));
+                        }
+                    }
+                }
+
+                var imgId = new Date().getTime();
+                var img = document.createElement('img');
+                img.id = 'fb_' + imgId, img.src = 'https://www.facebook.com/tr/?' + params.join('&'), img.width = 1, img.height = 1, img.style = 'display:none;';
+                document.head.appendChild(img);
+                window.setTimeout(function() { var t = document.getElementById('fb_' + imgId);
+                    t.parentElement.removeChild(t); }, 1000);
+
+            };
+            // end of: initializing rheasy_fbq object
+        })();
+    </script>

@@ -1,0 +1,57 @@
+{% comment %}
+Example of use:
+
+{% include 'product-block', product_collection: collection %}
+
+{% endcomment %}
+
+{% assign image_size = '800x' %}
+{% assign block_size = 'medium' %}
+{% if product.tags contains 'meta-image-large' %}
+{% unless product_image_size_norm %}
+{% assign image_size = '1200x' %}
+{% assign block_size = 'large' %}
+{% endunless %}
+{% endif %}
+
+{% include 'product-label' with product %}
+
+{% unless no_quick_buy %}{% assign no_quick_buy = false %}{% endunless %}
+
+{% assign collection_colour_class = '' %}
+
+{% if product_collection %}
+    {% capture product_url %}{{ product.url | within: product_collection }}{% endcapture %}
+{% else %}
+    {% capture product_url %}{{ product.url }}{% endcapture %}
+{% endif %}
+<div class="block product size-{{ block_size }} initially-hidden">
+    <div class="main">
+      <a class="img-link" href="{{ product_url }}" title="{{ product.title | escape }}">
+        {{ label }}
+        <img class="lazyload" data-expand="-10" data-src="{{ product.featured_image | product_img_url: image_size, format: 'pjpg' }}" alt="{{ product.featured_image.alt | escape }}" />
+      </a>
+      
+      {% if settings.prod_block_qv and no_quick_buy == false %}
+      <div class="quick-buy-row">
+        <a href="{{ product_url }}?view=lightbox" class="quick-buy button slim">{{ 'products.listing.quick_view' | t }}</a>
+      </div>
+      {% endif %}
+    </div>
+  
+  	{% comment %} Shopify's Reviews app code. Remove the comment tags below to show ratings on products. {% endcomment %}
+  	{% comment %}
+    <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+  	{% endcomment %}
+    
+  <div class="sub">
+    <a class="product-block-title" href="{{ product_url }}">{{ product.title }}</a>
+    <div class="pricearea">
+      {% if product.compare_at_price > product.price %}
+      <span class="was-price theme-money">{{ product.compare_at_price | money }}</span>
+      {% endif %}
+      {% if product.price_varies %}<span class="from">{{ 'products.listing.from' | t }}</span>{% endif %}
+      <span class="price theme-money">{{ product.price | money }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+
+<div data-section-type="featured-collection">
+  {% assign collection = collections[section.settings.collection] %}
+  
+  {% unless collection == blank %}
+  
+  <div class="spacey-row align-center">
+    <h1><a href="{{ collection.url }}">{{ section.settings.title }}</a></h1>
+  </div>
+  
+  <div class="blocklayout">
+    {% for product in collection.products %}
+      {% comment %} Bold:POv2 {% endcomment %}
+      {%- include 'bold-product' with product, hide_action: 'skip' -%}    
+      {% include 'product-block' with product, product_collection: collection %}
+    {% endfor %}
+  </div>
+  
+  {% else %}
+  
+  <div class="spacey-row align-center">
+    <h1>{{ section.settings.title }}</h1>
+  </div>
+  
+  <div class="blocklayout">
+    {% for i in (1..12) %}
+    {% include 'onboarding-product-block' %}
+    {% endfor %}
+  </div>
+  
+  {% endunless %}
+</div>
+
+{% schema %}
+  {
+    "name": "Featured collection",
+	"class": "index-section",
+    "settings": [
+      {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+		  "default": "Featured collection"
+      },
+	  {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+      }
+	],
+	"presets": [
+      {
+        "name": "Featured collection",
+        "category": "Collection"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,155 @@
+{% assign image_column_class = 'triple-size' %}
+{% assign image_size = '2048x' %}
+{% if section.blocks.size == 2 %}
+  {% assign image_column_class = 'halfrow-size' %}
+  {% assign image_size = '1024x' %}
+{% elsif section.blocks.size == 3 %}
+  {% assign image_column_class = '' %}
+  {% assign image_size = '800x' %}  
+{% endif %}
+
+<div class="spacey-row" data-section-type="custom-row">
+  <div class="three-block-layout cf">
+    {% for block in section.blocks %}
+    <div class="col-block {{ image_column_class }}" {{ block.shopify_attributes }}>
+      {% if block.type == 'image' %}
+      <div class="home-image">
+
+        {% if block.settings.image == blank %}
+
+        <div class="placeholder-image landscape {% if block.settings.text != blank %}dark{% endif %}">
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+
+        {% else %}
+
+        {% if block.settings.link_url != blank %}<a href="{{ block.settings.link_url }}">{% endif %}
+        {{ block.settings.image | img_url: image_size | img_tag }}
+        {% if block.settings.link_url != blank %}</a>{% endif %}
+
+        {% endif %}
+
+        {% if block.settings.text != blank %}
+        <div class="overlay-text">
+          <div class="overlay-text__inner" style="color:{{ block.settings.color }}">
+            {{ block.settings.text }}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      {% elsif block.type == 'text' %}
+      <div class="rte">
+        {% if block.settings.title %}
+        <h1>{{ block.settings.title }}</h1>
+        {% endif %}
+        {{ block.settings.text }}
+      </div>
+
+      {% elsif block.type == 'video' %}
+      <div class="video-container" data-video-id="{{ block.settings.video_url.id }}" data-video-type="{{ block.settings.video_url.type }}">
+      </div>
+
+      {% elsif block.type == 'html' %}
+      {{ block.settings.code }}
+
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Custom content",
+	"max_blocks": 3,
+    "settings": [],
+    "blocks": [
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+		  {
+            "type": "url",
+            "id": "link_url",
+            "label": "Image link"
+          },
+		  {
+            "type": "text",
+            "id": "text",
+            "label": "Overlay text"
+          },
+		  {
+            "type": "color",
+            "id": "color",
+            "label": "Overlay color",
+			"default": "#ffffff"
+          }
+		]
+	  },
+	  {
+        "type": "text",
+        "name": "Text",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Rich text"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text",
+            "default": "<p>Use this text to share information about your store with your customers.</p><p>Describe products, share announcements, or welcome customers to your store.</p>"
+          }
+		]
+	  },
+	  {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "id": "video_url",
+            "type": "video_url",
+            "label": "Video URL",
+            "accept": ["youtube", "vimeo"],
+            "info": "Supports Youtube and Vimeo",
+            "default": "https:\/\/www.youtube.com\/watch?v=_9VUPq3SxOc"
+          }
+		]
+	  },
+	  {
+        "type": "html",
+        "name": "Custom HTML",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "code",
+            "label": "HTML"
+          }
+		]
+	  }
+	],
+	"presets": [
+      {
+        "name": "Custom content",
+		"category": "Advanced layout",
+		"blocks": [
+          {
+            "type": "image"
+          },
+		  {
+            "type": "text"
+          }
+        ]
+      }
+	]
+  }
+{% endschema %}

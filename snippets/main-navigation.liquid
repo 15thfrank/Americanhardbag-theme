@@ -1,0 +1,72 @@
+{% comment %} 3-tier nav! {% endcomment %}
+
+{% if shop.customer_accounts_enabled %}
+<span class="account-links">
+  {% if customer  %}
+  {{ 'layout.customer.account' | t | link_to: '/account' }} / 
+  {{ 'layout.customer.log_out' | t | customer_logout_link }}
+  {% else %}
+  {{ 'layout.customer.log_in' | t | customer_login_link }} /
+  {{ 'layout.customer.register' | t | customer_register_link }}
+  {% endif %}
+</span>
+{% endif %}
+
+<div class="tier1">
+  <a class="back" href="#">{% include 'svg-chevron-left' %}</a>
+
+  <ul>
+    {% for link in linklists[main-navigation].links %}
+    {% assign sidelistinner1selected = false %}
+    {% assign sidelistinner2selected = false %}
+    {% assign sidelistinner2selectedthisiteration = false %}
+
+    {% include 'child-menu-detector' with link %}
+    {% capture sidelistinner1 %}
+    {% if has_drop_down %}
+    <div class="tier2">
+      <div><div class="tier-title">{{ link.title }}</div></div>
+      <ul>
+        {% for innerlink in linklists[child_list_handle].links %}
+        {% assign sidelistinner2selectedthisiteration = false %}
+        {% if innerlink.active %}{% assign sidelistinner1selected = true %}{% endif %}
+
+        {% include 'child-menu-detector' with innerlink %}
+        {% capture sidelistinner2 %}
+        {% if has_drop_down %}
+        <ul class="tier3">
+          {% for innestlink in linklists[child_list_handle].links %}
+          {% if innestlink.active %}
+          {% assign sidelistinner2selected = true %}
+          {% assign sidelistinner2selectedthisiteration = true %}
+          {% endif %}
+          <li{% if innestlink.active %} class="active"{% endif %}>
+            {{ innestlink.title | link_to: innestlink.url }}
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% endcapture %}
+        <li class="{% if innerlink.active %}active{% endif %}{% if sidelistinner2selectedthisiteration %} expanded{% endif %}">
+          <a href="{{ innerlink.url }}">{{ innerlink.title }}</a>
+          {{ sidelistinner2 }}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endcapture %}
+
+    <li class="{% if link.active %}active{% endif %}{% if sidelistinner1selected or sidelistinner2selected %} expanded{% endif %}">
+      <a class="tier1title" href="{{ link.url }}">{{ link.title }}</a>
+      {{ sidelistinner1 }}
+    </li>
+    {% endfor %}
+  </ul>
+  
+  {% if settings.show_multiple_currencies %}
+  <div class="mobile-only currency-switcher">
+    {% include 'currencies-switcher' %}
+  </div>
+  {% endif %}
+</div>

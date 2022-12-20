@@ -1,0 +1,183 @@
+{% if template == 'password' or template == 'gift_card' %}
+
+{% comment %} Password/gift card template logo {% endcomment %}
+<div class="shoplogo {% if section.settings.use_logo_margin %}with-margin{% endif %}">
+  <a href="/" title="{{ shop.name }}">
+    {% if section.settings.logo %}
+    <span class="logoimg"><img src="{{ section.settings.logo | img_url: '480x' }}" alt="{{ shop.name }}" /></span>
+    {% else %}
+    <span class="logotext">{{ shop.name }}</span>
+    {% endif %}
+  </a>
+</div>
+
+{% else %}
+
+<div data-section-type="header-section">
+  
+  <div class="page-header cf">
+    <div class="page-header__inner">
+      <a class="nav-toggle" href="#">{% include 'svg-nav' %}</a>
+
+      <div class="shoplogo {% if section.settings.use_logo_margin %}with-margin{% endif %}">
+        {% if section.settings.logo %}
+          	<a href="tel:1(888)311-0016"><span class="logoimg logo_mobile"><img src="{{ section.settings.logo | img_url: '480x' }}" alt="{{ shop.name }}" /></span></a>            
+          	<a href="tel:1(888)311-0016"><span class="logo_mobile_phone_number">1(888) 311-0016</span></a>
+          {% else %}
+          	<a href="/" title="{{ shop.name }}"><span class="logotext">{{ shop.name }}</span></a>
+          {% endif %}
+      </div>
+      
+      {% if section.settings.show_store_message %}
+      <span class="store-message store-message--upper">
+        {% if section.settings.store_message_url != blank %}<a href="{{ section.settings.store_message_url }}">{% endif %}
+        {{ section.settings.store_message }}
+        {% if section.settings.store_message_url != blank %}</a>{% endif %}
+      </span>
+      {% endif %}
+
+      {% if shop.customer_accounts_enabled %}
+      <span class="account-links">
+        {% if customer  %}
+        {{ 'layout.customer.account' | t | link_to: '/account' }} / 
+        {{ 'layout.customer.log_out' | t | customer_logout_link }}
+        {% else %}
+        {{ 'layout.customer.log_in' | t | customer_login_link }} /
+        {{ 'layout.customer.register' | t | customer_register_link }}
+        {% endif %}
+      </span>
+      {% endif %}
+
+      <span class="search-and-cart">
+        <a class="search desktop-only" href="/search">{% include 'svg-search' %}</a>
+
+        <span class="cartsummary">
+          <span class="cartsummary__inner">
+            <a href="/{% if template != 'cart' or settings.cart_terms_show %}cart{% else %}checkout{% endif %}">
+              <span class="title">{{ 'layout.sidebar.cart' | t }}</span>
+              <span class="numitems">(
+                {%- include 'bold-options-hybrid-cart-item-count' with cart -%}
+                {{- bold_options_hybrid_item_count -}})</span>
+            </a>
+
+            <span class="desktop-only">
+              {% include 'currencies-switcher' %}
+            </span>
+          </span>
+        </span>
+      </span>
+    </div>
+    
+    {% if section.settings.show_store_message %}
+    <span class="store-message store-message--lower">
+      {% if section.settings.store_message_url != blank %}<a href="{{ section.settings.store_message_url }}">{% endif %}
+      {{ section.settings.store_message }}
+      {% if section.settings.store_message_url != blank %}</a>{% endif %}
+    </span>
+    {% endif %}
+  </div>
+  
+  <div id="navbar" class="nav-style-{{ section.settings.sidebar_submenu_style }}" data-section-type="sidebar-section">
+    <div id="navpanel">
+      <div class="shoplogo {% if section.settings.use_logo_margin %}with-margin{% endif %}">
+        {% if section.settings.logo %}
+          	<a href="/" title="{{ shop.name }}">
+              <span class="logoimg logo_desk"><img src="{{ section.settings.logo | img_url: '480x' }}" alt="{{ shop.name }}" /></span>
+            </a>  
+          	<a href="/" title="{{ shop.name }}">
+              <span class="logo_desk_phone_number">1(888) 311-0016</span>          
+            </a>   
+          {% else %}
+        	<a href="/" title="{{ shop.name }}">
+          		<span class="logotext">{{ shop.name }}</span>
+            </a>  
+          {% endif %}
+      </div>
+
+      <div class="mobile-only search-box">
+        <form name="search" action="/search">
+          <input type="hidden" name="type" value="{{ settings.search_type }}" />
+          <input type="text" name="q" placeholder="{{ 'general.search.sidebar_placeholder' | t }}" value="" />
+          <button type="submit" class="plain">{% include 'svg-search' %}</button>
+        </form>
+      </div>
+
+      <div class="mainnav">
+        {% include 'main-navigation' with section.settings.menu_linklist %}
+      </div>
+    </div>
+  </div>
+  
+</div>
+{% endif %}
+
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "240px wide (recommended)"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_logo_margin",
+        "label": "Add margin to logo",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Navigation"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_linklist",
+        "label": "Menu",
+		"default": "main-menu"
+      },
+      {
+        "type": "select",
+        "id": "sidebar_submenu_style",
+        "label": "Child navigation style",
+        "options": [
+          {
+            "value": "in",
+            "label": "Inside"
+          },
+          {
+            "value": "out",
+            "label": "Fly-out"
+          }
+        ],
+        "default": "in"
+      },
+      {
+        "type": "header",
+        "content": "Store message"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_store_message",
+        "label": "Show",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "store_message",
+        "label": "Message"
+      },
+      {
+        "type": "url",
+        "id": "store_message_url",
+        "label": "Link"
+      }
+    ]
+  }
+{% endschema %}

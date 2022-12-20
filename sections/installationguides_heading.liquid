@@ -1,0 +1,59 @@
+{% assign bgimg = section.settings.bgimg | img_url: 'master' %}
+
+<style>
+    .insguide_heading{
+        background-color: grey;
+        background-image: url("{{bgimg}}") ;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-blend-mode: multiply;
+        min-height: 250px;
+        width: 100%;
+        display: table;
+    }
+</style>
+
+
+<div class="insguide_heading">
+
+    <div class="heading-container">
+        <h1 class="page-title">{{section.settings.pagetitle}}</h1>
+        <h2> {{section.settings.description}} </h2>
+    </div>
+
+
+</div>
+
+
+
+{% schema %}
+  {
+    "name": "Page Heading",
+    "settings": [
+        {
+            "type": "image_picker",
+            "id": "bgimg",
+            "label": "Background Image"
+        },
+        {
+            "type": "text",
+            "id": "pagetitle",
+            "label": "Page Title",
+            "default": "Installation Guides"
+        },
+        {
+            "type": "textarea",
+            "id": "description",
+            "label": "Description",
+            "default": "Description"
+        }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

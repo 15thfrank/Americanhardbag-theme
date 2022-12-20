@@ -1,0 +1,15 @@
+<div class="block product size-medium" {{ custom_attrs }}>
+  {% assign prod_image_size = '800x' %}
+  <div class="main">
+    <a class="img-link" href="{{ collection.url }}" title="{{ collection.title }}">
+      {% if collection.image %}
+      <img class="lazyload" data-src="{{ collection.image.src | collection_img_url: prod_image_size, format: 'pjpg' }}" alt="{{ collection.image.alt }}" />
+      {% else %}
+      <img class="lazyload" data-src="{{ collection.all_products.first.featured_image | product_img_url: prod_image_size, format: 'pjpg' }}" alt="{{ collection.all_products.first.featured_image.alt }}" />
+      {% endif %}
+    </a>
+  </div>
+  <div class="sub">
+    <p><a class="product-block-title" href="{{ collection.url }}">{{ collection.title }}</a></p>
+  </div>
+</div>
